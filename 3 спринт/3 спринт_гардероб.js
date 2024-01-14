@@ -1,40 +1,56 @@
-let readline = require('readline');
-let rl = readline.createInterface({
+const _readline = require('readline');
+
+const _reader = _readline.createInterface({
   input: process.stdin
 });
 
-let lines = [];
+const _inputLines = [];
+let _curLine = 0;
 
-function readLine (line) {
-  if (line.trim() !== '') {
-    lines.push(line);
+_reader.on('line', line => {
+  _inputLines.push(line);
+});
+
+process.stdin.on('end', solve);
+
+function wardrobe(arr) {
+  const countedValues = new Array(3).fill(0);
+  for (const value of arr) {
+    countedValues[value]++;
+  }
+
+  const res = [];
+  let i = 0;
+
+  while (i <  countedValues.length) {
+    if ( countedValues[i] !== 0) {
+      res.push(i);
+      countedValues[i]--;
+    } else {
+      i++;
+    }
+  }
+  return res;
+}
+
+function solve() {
+  const rows = readInt();
+  if (rows) {
+    const arr = readArray();
+    const result = wardrobe(arr);
+
+    process.stdout.write(`${result.join(' ')}`);
   }
 }
 
-rl.on('line', readLine).on('close', () => {
-  let k = +lines[0];
-  let arr;
-  if (!lines[1]) {
-    console.log(k.toString());
-    return;
-  } else {
-    arr = lines[1].split(' ');
-  }
+function readInt() {
+  const n = Number(_inputLines[_curLine]);
+  _curLine++;
+  return n;
+}
 
-  function countingSort(array, k) {
-    const countedValues = new Array(k).fill(0);
-    for (const value of array) {
-      countedValues[value]++;
-    }
-
-    let index = 0;
-    for (let value = 0; value < k; value++) {
-      for (let amount = 0; amount < countedValues[value]; amount++) {
-        array[index] = value;
-        index++;
-      }
-    }
-    console.log(array.join(' '));
-  }
-  countingSort(arr, k)
-});
+function readArray() {
+  var arr = _inputLines[_curLine].trim(" ").split(" ").map(num => Number(num));
+  _curLine++;
+  return arr;
+}
